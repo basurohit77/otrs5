@@ -8,6 +8,7 @@ EXPOSE 8080 80 8443 443 3306 22
 #RUN --tmpfs /tmp --tmpfs /run cp Dockerfle /tmp/
 RUN --mount=type=tmpfs,target=/tmp --mount=type=tmpfs,target=/run dnf clean all;
 VOLUME [ "/sys/fs/cgroup" ]
+USER root
 ENTRYPOINT ["/bin/bash", "-c", "while true; do sleep 5; done"]
 CMD [ "/sbin/init" ]
 
