@@ -8,8 +8,8 @@ STOPSIGNAL SIGRTMIN+3
 EXPOSE 80 443 8080 8443 3306 22
 #RUN --tmpfs /tmp --tmpfs /run cp Dockerfle /tmp/
 #RUN --mount=type=tmpfs,target=/tmp --mount=type=tmpfs,target=/run dnf clean all;
-RUN --mount=type=volume,source=/tmp,target=/tmp dnf clean all
-RUN --mount=type=volume,source=/run,target=/run dnf clean all
+RUN --mount=type=cache,target=/tmp dnf clean all;
+RUN --mount=type=cache,target=/run dnf clean all;
 RUN --mount=type=volume,source=/sys/fs/cgroup,target=/sys/fs/cgroup,readonly dnf clean all;
 #VOLUME [ "/sys/fs/cgroup" ]
 ENTRYPOINT ["/bin/bash", "-c", "while true; do sleep 5; done"]
