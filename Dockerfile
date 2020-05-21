@@ -6,8 +6,10 @@ RUN dnf -y install mariadb; dnf -y install httpd; dnf -y install otrs; dnf clean
 STOPSIGNAL SIGRTMIN+3
 EXPOSE 8080 80 8443 443 3306 22
 #RUN --tmpfs /tmp --tmpfs /run cp Dockerfle /tmp/
-RUN --mount=type=tmpfs,target=/tmp --mount=type=tmpfs,target=/run dnf clean all;
+#RUN --mount=type=tmpfs,target=/tmp --mount=type=tmpfs,target=/run dnf clean all;
 VOLUME [ "/sys/fs/cgroup" ]
+VOLUME [ "/tmp" ]
+VOLUME [ "/run" ]
 USER root
 ENTRYPOINT ["/bin/bash", "-c", "while true; do sleep 5; done"]
 CMD [ "/sbin/init" ]
