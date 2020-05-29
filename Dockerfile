@@ -1,16 +1,18 @@
-FROM docker.io/rohitbasu77/otrs5-fedora3
+FROM docker.io/rohitbasu77/centos7_perl5_mariadb10
 LABEL maintainer="Rohit <basurohit77@gmail.com>"
-LABEL description="Fedora3.1 with Perl5.30 and Otrs5-Mariadb10"
+LABEL description="Fedora3.1 with Perl5.30 and Mariadb10"
 ENV container docker
-USER root
-RUN dnf -y install mariadb; dnf -y install httpd; dnf -y install otrs; dnf clean all; systemctl enable httpd; systemctl enable mariadb;
-STOPSIGNAL SIGRTMIN+3
+#ENV HTTP_PROXY "http://127.0.0.1:7080"
+#ENV HTTPS_PROXY "https://127.0.0.1:7080"
+#ENV FTP_PROXY "ftp://127.0.0.1:7080"
+#ENV NO_PROXY "*.test.example.com,.example2.com"
+RUN yum -y install epel-release; yum clean all; yum makecache; yum update -y; yum install -y rsyslog; yum install -y httpd;
+RUN systemctl enable rsyslog.service; systemctl enable httpd;
+CMD [ "/usr/lib/systemd/systemd" ]
+ADD . /sys/fs/cgroup/.
 EXPOSE 80 443 8080 8443 3306 22
-#RUN --tmpfs /tmp --tmpfs /run cp Dockerfle /tmp/
-#RUN --mount=type=tmpfs,target=/tmp --mount=type=tmpfs,target=/run dnf clean all;
-RUN --mount=type=cache,target=/tmp dnf clean all;
-RUN --mount=type=cache,target=/run dnf clean all;
-RUN --mount=type=volume,source=/sys/fs/cgroup,target=/sys/fs/cgroup,readonly dnf clean all;
-#VOLUME [ "/sys/fs/cgroup" ]
-ENTRYPOINT ["/bin/bash", "-c", "while true; do sleep 5; done"]
-CMD [ "/sbin/init" ]
+VOLUME [ "/sys/fs/cgroup" ]
+VOLUME [ "/tmp" ]
+VOLUME [ "/run" ]
+#RUN systemctl restart httpd; systemctl restart mariadb;
+#ENTRYPOINT ["/bin/bash", "-c", "while true; do sleep 5; done"]
